@@ -1,0 +1,265 @@
+6. Cursors: (All types: Implicit, Explicit, Cursor FOR Loop, Parameterized Cursor)
+Write a PL/SQL block of code using parameterized Cursor that will merge the data available in the newly
+created table N_Roll_Call with the data available in the table O_Roll_Call. If the data in the first table
+already exists in the second table then that data should be skipped.
+Note: Instructor will frame the problem statement for writing PL/SQL block using all types of Cursors in
+line with above statement.
+
+
+
+
+mysql> use mohitDB;
+
+mysql> create table o_rollcall(roll_no int,name 
+varchar(20),address varchar(20));
+
+Query OK, 0 rows affected (0.28 sec)
+mysql> create table n_rollcall(roll_no int,name 
+varchar(20),address varchar(20));
+
+Query OK, 0 rows affected (0.27 sec)
+
+mysql> insert into o_rollcall values('1','Hitesh','Nandura');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into o_rollcall values('2','Piyush','MP');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into o_rollcall values('3','Ashley','Nsk');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into o_rollcall values('4','Kalpesh','Dhule');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into o_rollcall values('5','mohit','Aurangabad');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> delimiter //
+
+mysql> create procedure p3(in r1 int)
+ -> begin
+ -> declare r2 int;
+ -> declare exit_loop boolean;
+ -> declare c1 cursor for select roll_no from o_rollcall 
+where roll_no>r1;
+ -> declare continue handler for not found set 
+exit_loop=true;
+ -> open c1;
+ -> e_loop:loop
+ -> fetch c1 into r2;
+ -> if not exists(select * from n_rollcall where 
+roll_no=r2)
+ -> then
+ -> insert into n_rollcall select * from o_rollcall where 
+roll_no=r2;
+ -> end if;
+ -> if exit_loop
+ -> then
+ -> close c1;
+ -> leave e_loop;
+ -> end if;
+ -> end loop e_loop; -> end
+ -> //
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call p3(3); 
+-> //
+
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> select * from n_rollcall;
+
+ -> //
++---------+---------+-------------+
+| roll_no | name    | address     |
++---------+---------+-------------+
+| 4       | Kalpesh | Dhule       |
+| 5       | mohit   | Aurangabad  |
++---------+---------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> call p3(0);
+ -> //
+
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> select * from n_rollcall;
+ -> //
++---------+---------+--------------+
+| roll_no | name    | address      |
++---------+---------+--------------+
+| 4       | Kalpesh | Dhule        |
+| 5       | mohit   | Aurangabad   |
+| 1       | Hitesh  | Nandura      |
+| 2       | Piyush  | MP           |
+| 3       | Ashley  | Nsk          |
++---------+---------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into o_rollcall values('6','Patil','Kolhapur');
+ -> //
+
+Query OK, 1 row affected (0.04 sec)
+
+mysql> call p3(4);
+ -> //
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from n_rollcall;
+ -> //
++---------+---------+-----------+
+| roll_no | name    | address   |
++---------+---------+-----------+
+| 4       | Kalpesh | Dhule     |
+| 5       | mohit   | Aurangabad|
+| 1       | Hitesh  | Nandura   |
+| 2       | Piyush  | MP        |
+| 3       | Ashley  | Nsk       |
+| 6       | Patil   | Kolhapur  |
++---------+---------+-----------+
+6 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+or
+
+
+
+
+
+
+
+
+
+
+
+
+
+mysql> create database rollcall;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> use rollcall;
+Database changed
+
+mysql> create table oldRollCall(rno int primary key,name varchar(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into oldRollCall values(1,"ABC"),(2,"XYZ"),(3,"PQR");
+Query OK, 3 rows affected (0.02 sec)
+
+mysql> select * from oldRollCall;
++-----+------+
+| rno | name |
++-----+------+
+|   1 | ABC  |
+|   2 | XYZ  |
+|   3 | PQR  |
++-----+------+
+
+mysql> create table newRollCall(rno int,name varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE Merge()
+    -> BEGIN
+    ->   DECLARE done INT DEFAULT FALSE;
+    ->   DECLARE rollno INT;
+    ->   DECLARE Sname VARCHAR(20);
+    ->
+    ->   DECLARE c1 CURSOR FOR SELECT rno, name FROM oldRollCall;
+    ->   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    ->
+    ->   OPEN c1;
+    ->
+    ->   read_loop: LOOP
+    ->     FETCH c1 INTO rollno, Sname;
+    ->     IF done THEN
+    ->       LEAVE read_loop;
+    ->     END IF;
+    ->
+    ->     -- Check if the data exists in newRollCall before inserting
+    ->     IF NOT EXISTS (SELECT 1 FROM newRollCall WHERE rno = rollno AND name = Sname) THEN
+    ->       INSERT INTO newRollCall (rno, name) VALUES (rollno, Sname);
+    ->     END IF;
+    ->   END LOOP;
+    ->
+    ->   CLOSE c1;
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+
+mysql> call Merge();
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from oldRollCall;
++-----+------+
+| rno | name |
++-----+------+
+|   1 | ABC  |
+|   2 | XYZ  |
+|   3 | PQR  |  |
++-----+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from newRollCall;
++-----+------+
+| rno | name |
++-----+------+
+|   1 | ABC  |
+|   2 | XYZ  |
+|   3 | PQR  |
++-----+------+
+
+
+
+
+
+
+
+
+
+
+
+Certainly! Let's provide more context and information about cursors, their types, and why they are used in PL/SQL.
+
+**What are Cursors?**
+
+Cursors in the context of PL/SQL are database objects that allow you to retrieve, manipulate, and process rows returned by a SQL query. They provide a way to navigate through the result set of a query, allowing you to fetch data from the database one row at a time. Cursors are particularly useful when working with a set of rows that meet specific criteria.
+
+**Why are Cursors Used?**
+
+Cursors are used in PL/SQL for various reasons:
+
+1. **Fetching Rows Sequentially**: Cursors allow you to fetch rows one at a time, which can be important for processing large result sets without loading the entire dataset into memory.
+
+2. **Iterating Over Query Results**: Cursors are commonly used to iterate over the result set of a query, allowing you to perform actions on each row, such as data manipulation, aggregation, or validation.
+
+3. **Processing Result Sets**: Cursors enable complex data processing, such as calculating totals, averages, or aggregations, on a set of rows returned by a query.
+
+4. **Modifying Data**: Cursors can be used to update, insert, or delete records in a database based on certain conditions. This is often done within a loop that uses a cursor to navigate through the records.
+
+5. **Performing Joins**: Cursors can be used to process results of joins between multiple tables, allowing you to access columns from different tables within a single cursor.
+
+**Types of Cursors:**
+
+There are three main types of cursors in PL/SQL:
+
+1. **Implicit Cursor**: Implicit cursors are automatically created by the Oracle database when a SQL query is executed within a PL/SQL block. They are often used for simple queries that return a single value, and you don't need to explicitly declare or open them.
+
+2. **Explicit Cursor**: Explicit cursors are explicitly declared and defined by the developer. You need to declare them and specify the query to be associated with them. Explicit cursors provide more control and flexibility over data retrieval.
+
+3. **Parameterized Cursor**: A parameterized cursor is a type of explicit cursor that allows you to use parameters in your queries. These parameters can be dynamic values passed when opening the cursor. Parameterized cursors are useful when you need to fetch data based on changing conditions.
+
+In the provided code, an explicit cursor is used. It is explicitly declared and opened with a SELECT statement to fetch data from a table. Parameterized cursors, as seen in the code, are a subtype of explicit cursors and allow dynamic filtering of the results.
+
+In summary, cursors are essential in PL/SQL for navigating and processing data returned from the database. They come in different types, each suited for specific use cases, providing control and flexibility in working with query results.

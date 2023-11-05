@@ -1,0 +1,58 @@
+Sure, let's provide an overview of the time and space complexities for each of the algorithms and problems you mentioned:
+
+1. **Alpha-Beta Pruning**:
+   - **Logic**: Alpha-beta pruning is used to optimize the minimax algorithm in game trees. It reduces the number of nodes that need to be evaluated in a search tree by eliminating branches that cannot possibly affect the final decision.
+   - **Time Complexity**: O(b^d) in the worst case, where b is the branching factor and d is the depth of the tree.
+   - **Space Complexity**: O(d) for the depth of the recursive call stack.
+
+2. **N-Queens Problem**:
+   - **Logic**: The N-Queens problem is a classic combinatorial problem. The goal is to place N queens on an N×N chessboard such that no two queens threaten each other.
+   - **Time Complexity**: Exponential, typically O(N!) but can be optimized.
+   - **Space Complexity**: O(N) for the board size and recursive call stack.
+
+3. **Graph Coloring**:
+   - **Logic**: Graph coloring is the assignment of labels (called colors) to the vertices of a graph, such that no two adjacent vertices have the same color.
+   - **Time Complexity**: O(V^2) for the simple backtracking approach. Heuristic approaches may vary.
+   - **Space Complexity**: O(V) for the color assignment array.
+
+4. **Depth-First Search (DFS)**:
+   - **Logic**: DFS is used to traverse a graph or tree by exploring as far as possible along each branch before backtracking.
+   - **Time Complexity**: O(V + E), where V is the number of vertices and E is the number of edges in the graph.
+   - **Space Complexity**: O(V) for the stack or recursive call stack.
+
+5. **Breadth-First Search (BFS)**:
+   - **Logic**: BFS is used to traverse a graph or tree level by level, exploring all neighbors of a node before moving to the next level.
+   - **Time Complexity**: O(V + E), where V is the number of vertices and E is the number of edges in the graph.
+   - **Space Complexity**: O(V) for the queue and visited array.
+
+6. **A* Search Algorithm**:
+   - **Logic**: A* is an informed search algorithm that uses heuristics to find the shortest path in a weighted graph. It combines Dijkstra's algorithm and a heuristic to estimate the cost to the goal.
+   - **Time Complexity**: O(b^d) in the worst case, similar to Dijkstra's algorithm.
+   - **Space Complexity**: O(b^d) for the open set in the worst case.
+
+7. **Dijkstra's Algorithm**:
+   - **Logic**: Dijkstra's algorithm is used to find the shortest path in a weighted graph. It maintains a set of visited nodes and updates the distance from the source to other nodes.
+   - **Time Complexity**: O(V^2) for the simple array-based implementation. O((V + E) * log(V)) with a priority queue.
+   - **Space Complexity**: O(V) for the distances and visited arrays.
+
+8. **Job Scheduling**:
+   - **Logic**: Job scheduling aims to maximize the total profit by selecting a subset of jobs that can be scheduled within their deadlines without overlap.
+   - **Time Complexity**: O(N^2) for the simple greedy approach.
+   - **Space Complexity**: O(N) for the time_slots array.
+
+9. **Kruskal's Minimum Spanning Tree**:
+   - **Logic**: Kruskal's algorithm is used to find the minimum spanning tree in a weighted graph by iteratively adding edges with the smallest weight.
+   - **Time Complexity**: O(E * log(E)), where E is the number of edges.
+   - **Space Complexity**: O(V + E) for the data structures.
+
+10. **Selection Sort**:
+    - **Logic**: Selection sort is a simple comparison-based sorting algorithm that repeatedly selects the minimum element from the unsorted portion and moves it to the sorted portion of the array.
+    - **Time Complexity**: O(N^2) for an array of N elements.
+    - **Space Complexity**: O(1) for in-place sorting.
+
+11. **Single-Source Shortest Path Algorithm (Dijkstra's)**:
+    - **Logic**: Dijkstra's algorithm finds the shortest path from a source vertex to all other vertices in a weighted graph by maintaining a priority queue of vertices to be processed.
+    - **Time Complexity**: O((V + E) * log(V)) using a priority queue (binary heap or Fibonacci heap).
+    - **Space Complexity**: O(V) for the distances and priority queue.
+
+Each problem and algorithm has its own characteristics and complexity, and optimizations can be applied to improve performance in practical applications. The time and space complexities mentioned are general guidelines and may vary based on the specific implementation details.
