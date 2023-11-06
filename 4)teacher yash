@@ -1,0 +1,37 @@
+sudo systemctl start mongod
+
+mongo
+
+use ass4
+
+// Insert teachers and students
+db.Teachers.insertMany([
+  { Tname: "SSS", dno: 4, dname: "CS", experience: 13, salary: 35000, date_of_joining: "23.6.2020" },
+  { Tname: "VK", dno: 5, dname: "IT", experience: 10, salary: 25000, date_of_joining: "12.5.2018" },
+  { Tname: "JB", dno: 6, dname: "ENTC", experience: 2, salary: 9000, date_of_joining: "22.4.2022" }
+]);
+
+db.Teachers.insertMany([
+  { Tname: "XYZ", dno: 5, dname: "IT", experience: 11, salary: 15000, date_of_joining: "23.6.2015" },
+  { Tname: "PQR", dno: 4, dname: "CS", experience: 8, salary: 5000, date_of_joining: "7.9.2012" }
+]);
+
+db.Students.insertMany([
+  { Sname: "ABCD", rollno: 5, class: 9 },
+  { Sname: "PQRS", rollno: 2, class: 10 },
+  { Sname: "Rahul", rollno: 12, class: 9 }
+]);
+
+// Find and filter teachers
+db.Teachers.find({ dname: "CS" });
+db.Teachers.find({ dname: { $in: ["CS", "IT", "ENTC"] }, salary: { $gte: 10000 } });
+
+// Update teachers
+db.Teachers.update({ Tname: "Praveen" }, { $set: { experience: 10 } }, { upsert: true });
+db.Teachers.update({ dname: "IT" }, { $set: { dname: "CS" } }, { multi: true });
+
+// Remove teachers
+db.Teachers.remove({ dname: "IT" });
+
+// Sort and limit teachers
+db.Teachers.find().sort({ Tname: 1 }).limit(3);
